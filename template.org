@@ -3144,6 +3144,8 @@ EOF
 
 
 * NOTES
+
+#+BEGIN_EXAMPLE sh
   +const fs = require("fs")
   +  "dir": function (a, b, c) {
   +    const d = function (e, f, g) {
@@ -3161,3 +3163,4 @@ EOF
   +
   +    return d(a, b, c)
   +  },
+#+END_EXAMPLE
