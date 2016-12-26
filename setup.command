@@ -113,7 +113,7 @@ cat <<-EOF | patch
    "pattern": "*"
  })
 +const proc = require("child_process")
- 
+
  // -- const -----------------------------------------------------------------
 @@ -12,4 +13,9 @@
  const opts = new function () {
@@ -126,7 +126,7 @@ cat <<-EOF | patch
    }
  }()
 @@ -28,4 +34,12 @@
- 
+
  gulp.task("default", function serve (done) {
 +  gulp.watch(opts.restart.files)
 +    .on("change", function () {
@@ -149,19 +149,19 @@ cat <<-EOF | patch
 --- gulpfile.js
 +++ gulpfile.js
 @@ -2,4 +2,5 @@
- 
+
  const gulp = require("gulp")
 +const path = require("path")
  const plug = require("gulp-load-plugins")({
    "pattern": "*"
 @@ -9,12 +10,27 @@
  // -- const -----------------------------------------------------------------
- 
+
 +const CWD = process.cwd()
 +const SRC = path.join(CWD, "${SRC}")
 +
  // -- opts ------------------------------------------------------------------
- 
+
  const opts = new function () {
    return {
 +    "changedInPlace": {
@@ -183,7 +183,7 @@ cat <<-EOF | patch
      }
    }
 @@ -24,4 +40,11 @@
- 
+
  const tidy = {
 +  "code": function (files, base) {
 +    return gulp.src(files, {
@@ -193,10 +193,10 @@ cat <<-EOF | patch
 +      .pipe(plug.trimlines(opts.trimlines))
 +  }
  }
- 
+
 @@ -42,4 +65,13 @@
      })
- 
+
 +  gulp.watch(path.join(SRC, "**", opts.ext.slim), opts.watch)
 +    .on("all", function (evt, file) {
 +      var slim = tidy.code(file, SRC)
@@ -211,6 +211,9 @@ cat <<-EOF | patch
 EOF
 
 cat > "${CWD}/.rubocop.yml" <<-EOF
+AllCops:
+  TargetRubyVersion: 2.4
+
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
@@ -271,7 +274,7 @@ cat <<-EOF | patch
      .on("all", function (evt, file) {
        var slim = tidy.code(file, SRC)
 +        .pipe(tidy.slim())
- 
+
        if (["add", "change"].includes(evt)) {
 EOF
 
@@ -283,7 +286,7 @@ cat <<-EOF | patch
 +++ gulpfile.js
 @@ -10,4 +10,5 @@
  // -- const -----------------------------------------------------------------
- 
+
 +const EXT = "${EXT}"
  const CWD = process.cwd()
  const SRC = path.join(CWD, "${SRC}")
@@ -323,14 +326,14 @@ cat <<-EOF | patch
      "restart": {
        "args": ["-e", 'activate app "Terminal"', "-e",
 @@ -73,4 +78,8 @@
- 
+
  const task = {
 +  "html": function () {
 +    return plug.lazypipe()
 +      .pipe(plug.rename, opts.rename.html)
 +  }
  }
- 
+
 EOF
 
 yarn add --dev \
@@ -369,7 +372,7 @@ cat <<-EOF | patch
      "rename": {
        "html": {
 @@ -78,7 +94,8 @@
- 
+
  const task = {
 -  "html": function () {
 +  "html": function (min) {
@@ -387,7 +390,7 @@ cat <<-EOF | patch
 --- gulpfile.js
 +++ gulpfile.js
 @@ -94,8 +94,9 @@
- 
+
  const task = {
 -  "html": function (min) {
 +  "html": function (lint, min) {
@@ -436,7 +439,7 @@ cat <<-EOF | patch
  const CWD = process.cwd()
  const SRC = path.join(CWD, "${SRC}")
 +const TMP = path.join(CWD, "${TMP}")
- 
+
  // -- opts ------------------------------------------------------------------
 @@ -25,5 +26,6 @@
      },
@@ -457,7 +460,7 @@ cat <<-EOF | patch
  }
 @@ -135,4 +141,16 @@
      })
- 
+
 +  gulp.watch(path.join(SRC, "**", opts.ext.svg), opts.watch)
 +    .on("all", function (evt, file) {
 +      var svg = tidy.code(file, SRC)
@@ -485,7 +488,7 @@ cat <<-EOF | patch
  const SRC = path.join(CWD, "${SRC}")
  const TMP = path.join(CWD, "${TMP}")
 +const OUT = path.join(CWD, "${OUT}")
- 
+
  // -- opts ------------------------------------------------------------------
 @@ -117,4 +118,5 @@
      return plug.lazypipe()
@@ -514,7 +517,7 @@ cat <<-EOF | patch
        "svg": "*.svg"
 @@ -133,4 +134,13 @@
      })
- 
+
 +  gulp.watch(path.join(SRC, "**", opts.ext.sass), opts.watch)
 +    .on("all", function (evt, file) {
 +      var sass = tidy.code(file, SRC)
@@ -897,7 +900,7 @@ cat <<-EOF | patch
      .on("all", function (evt, file) {
        var sass = tidy.code(file, SRC)
 +        .pipe(tidy.sass()())
- 
+
        if (["add", "change"].includes(evt)) {
 EOF
 
@@ -1646,7 +1649,7 @@ cat <<-EOF | patch
      "changedInPlace": {
        "firstPass": true
 @@ -120,4 +127,8 @@
- 
+
  const task = {
 +  "css": function () {
 +    return plug.lazypipe()
@@ -1682,7 +1685,7 @@ cat <<-EOF | patch
      "ext": {
        "sass": "*.s@(a|c)ss",
 @@ -127,7 +131,8 @@
- 
+
  const task = {
 -  "css": function () {
 +  "css": function (min) {
@@ -1797,7 +1800,7 @@ cat <<-EOF | patch
        "slim": "*.sl?(i)m",
 @@ -206,4 +207,13 @@
      })
- 
+
 +  gulp.watch(path.join(SRC, "**", opts.ext.es6), opts.watch)
 +    .on("all", function (evt, file) {
 +      var es6 = tidy.code(file, SRC)
@@ -1850,7 +1853,7 @@ cat <<-EOF | patch
      .on("all", function (evt, file) {
        var es6 = tidy.code(file, SRC)
 +        .pipe(tidy.es6()())
- 
+
        if (["add", "change"].includes(evt)) {
 EOF
 
@@ -2580,7 +2583,7 @@ cat <<-EOF | patch
        "slim": "*.sl?(i)m",
 @@ -272,4 +273,41 @@
      })
- 
+
 +  gulp.watch(path.join(SRC, "**", opts.ext.riot, "*"), opts.watch)
 +    .on("all", function (evt, file) {
 +      var riot = function (dir, base, min) {
@@ -2655,7 +2658,7 @@ cat <<-EOF | patch
 --- gulpfile.js
 +++ gulpfile.js
 @@ -216,5 +216,5 @@
- 
+
  const task = {
 -  "css": function (min) {
 +  "css": function (min, tag) {
@@ -2711,20 +2714,20 @@ cat <<-EOF | patch
            .pipe(plug.slim(opts.slim(min)))
 -          .pipe(task.html(false, min)()),
 +          .pipe(task.html(false, min, true)()),
- 
+
            gulp.src(path.join(dir, opts.ext.svg), {
              "base": base
            })
 -          .pipe(task.svg(min)()),
 +          .pipe(task.svg(min, true)()),
- 
+
            gulp.src(path.join(dir, opts.ext.sass), {
 @@ -293,5 +299,5 @@
            })
            .pipe(plug.sass(opts.sass(min)))
 -          .pipe(task.css(min)()),
 +          .pipe(task.css(min, true)()),
- 
+
            gulp.src(path.join(dir, opts.ext.es6), {
 @@ -299,5 +305,5 @@
            })
