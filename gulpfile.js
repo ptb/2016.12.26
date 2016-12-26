@@ -223,6 +223,10 @@ const task = {
       .pipe(plug.gulpIf, !min, plug.csslint.formatter("compact"))
       .pipe(plug.gulpIf, tag, plug.indent())
       .pipe(plug.gulpIf, min, plug.cssnano(opts.cssnano))
+      .pipe(plug.gulpIf, tag && !min, plug.injectString.prepend("\n"))
+      .pipe(plug.gulpIf, tag, plug.injectString.prepend("<style>"))
+      .pipe(plug.gulpIf, tag, plug.injectString.append("</style"))
+      .pipe(plug.gulpIf, tag && !min, plug.injectString.append("\n"))
       .pipe(plug.gulpIf, tag, plug.indent())
   },
   "html": function (lint, min, tag) {
@@ -239,6 +243,10 @@ const task = {
       .pipe(plug.gulpIf, !min, plug.eslint(opts.eslint))
       .pipe(plug.gulpIf, tag, plug.indent())
       .pipe(plug.gulpIf, min, plug.uglify())
+      .pipe(plug.gulpIf, tag && !min, plug.injectString.prepend("\n"))
+      .pipe(plug.gulpIf, tag, plug.injectString.prepend("<script>"))
+      .pipe(plug.gulpIf, tag, plug.injectString.append("</script"))
+      .pipe(plug.gulpIf, tag && !min, plug.injectString.append("\n"))
       .pipe(plug.gulpIf, tag, plug.indent())
   },
   "svg": function (min, tag) {
