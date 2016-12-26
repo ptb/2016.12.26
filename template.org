@@ -3141,6 +3141,30 @@ EOF
   cat <<-EOF | patch
   --- gulpfile.js
   +++ gulpfile.js
+  @@ -210,4 +210,11 @@
+         return stream
+       })
+  +  },
+  +  "wrap": function (el, min, tag) {
+  +    return plug.lazypipe()
+  +      .pipe(plug.gulpIf, tag && !min, plug.injectString.prepend("\n"))
+  +      .pipe(plug.gulpIf, tag, plug.injectString.prepend(\`<\${el}>\`))
+  +      .pipe(plug.gulpIf, tag, plug.injectString.append(\`</\${el}>\`))
+  +      .pipe(plug.gulpIf, tag && !min, plug.injectString.append("\n"))
+     }
+   }
+  @@ -224,4 +231,5 @@
+         .pipe(plug.gulpIf, tag, plug.indent())
+         .pipe(plug.gulpIf, min, plug.cssnano(opts.cssnano))
+  +      .pipe(tidy.wrap, "style", min, tag)
+         .pipe(plug.gulpIf, tag, plug.indent())
+     },
+  @@ -240,4 +248,5 @@
+         .pipe(plug.gulpIf, tag, plug.indent())
+         .pipe(plug.gulpIf, min, plug.uglify())
+  +      .pipe(tidy.wrap, "script", min, tag)
+         .pipe(plug.gulpIf, tag, plug.indent())
+     },
   EOF
 #+END_SRC
 
