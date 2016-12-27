@@ -3125,16 +3125,6 @@ EOF
     gulp-inject-string
 #+END_SRC
 
-
-** EXIT
-#+BEGIN_SRC sh
-  cp "${CWD}/Gemfile" "${CWD}/${TMP}/.Gemfile"
-  cp "${CWD}/config.rb" "${CWD}/${TMP}/.config.rb"
-  cp "${CWD}/gulpfile.js" "${CWD}/${TMP}/.gulpfile.js"
-  cp "${CWD}/package.json" "${CWD}/${TMP}/.package.json"
-  exit 0
-#+END_SRC
-
 **** Patch File: ~gulpfile.js~
 
 #+BEGIN_SRC sh
@@ -3166,6 +3156,16 @@ EOF
          .pipe(plug.gulpIf, tag, plug.indent())
      },
   EOF
+#+END_SRC
+
+
+** EXIT
+#+BEGIN_SRC sh
+  cp "${CWD}/Gemfile" "${CWD}/${TMP}/.Gemfile"
+  cp "${CWD}/config.rb" "${CWD}/${TMP}/.config.rb"
+  cp "${CWD}/gulpfile.js" "${CWD}/${TMP}/.gulpfile.js"
+  cp "${CWD}/package.json" "${CWD}/${TMP}/.package.json"
+  exit 0
 #+END_SRC
 
 

@@ -2766,12 +2766,6 @@ EOF
 yarn add --dev \
   gulp-inject-string
 
-cp "${CWD}/Gemfile" "${CWD}/${TMP}/.Gemfile"
-cp "${CWD}/config.rb" "${CWD}/${TMP}/.config.rb"
-cp "${CWD}/gulpfile.js" "${CWD}/${TMP}/.gulpfile.js"
-cp "${CWD}/package.json" "${CWD}/${TMP}/.package.json"
-exit 0
-
 cat <<-EOF | patch
 --- gulpfile.js
 +++ gulpfile.js
@@ -2800,3 +2794,9 @@ cat <<-EOF | patch
        .pipe(plug.gulpIf, tag, plug.indent())
    },
 EOF
+
+cp "${CWD}/Gemfile" "${CWD}/${TMP}/.Gemfile"
+cp "${CWD}/config.rb" "${CWD}/${TMP}/.config.rb"
+cp "${CWD}/gulpfile.js" "${CWD}/${TMP}/.gulpfile.js"
+cp "${CWD}/package.json" "${CWD}/${TMP}/.package.json"
+exit 0
